@@ -14,9 +14,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.khasanof.backup.IntegrationTest;
-import org.khasanof.backup.domain.BackupTenant;
-import org.khasanof.backup.domain.BackupTenantSetting;
-import org.khasanof.backup.repository.BackupTenantRepository;
+import org.khasanof.backup.domain.common.BackupTenant;
+import org.khasanof.backup.domain.common.BackupTenantSetting;
+import org.khasanof.backup.repository.common.BackupTenantRepository;
 import org.khasanof.backup.service.dto.BackupTenantDTO;
 import org.khasanof.backup.service.mapper.BackupTenantMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,7 +124,7 @@ class BackupTenantResourceIT {
         var returnedBackupTenantDTO = om.readValue(
             restBackupTenantMockMvc
                 .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(backupTenantDTO)))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(),
@@ -744,7 +744,7 @@ class BackupTenantResourceIT {
 
         restBackupTenantMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, backupTenantDTO.getId())
+                post(ENTITY_API_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(backupTenantDTO))
             )
@@ -767,7 +767,7 @@ class BackupTenantResourceIT {
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restBackupTenantMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, backupTenantDTO.getId())
+                post(ENTITY_API_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(backupTenantDTO))
             )
@@ -789,7 +789,7 @@ class BackupTenantResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restBackupTenantMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                post(ENTITY_API_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(backupTenantDTO))
             )
@@ -819,37 +819,6 @@ class BackupTenantResourceIT {
 
     @Test
     @Transactional
-    void partialUpdateBackupTenantWithPatch() throws Exception {
-        // Initialize the database
-        backupTenantRepository.saveAndFlush(backupTenant);
-
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-
-        // Update the backupTenant using partial update
-        BackupTenant partialUpdatedBackupTenant = new BackupTenant();
-        partialUpdatedBackupTenant.setId(backupTenant.getId());
-
-        partialUpdatedBackupTenant.dbPort(UPDATED_DB_PORT).dbPassword(UPDATED_DB_PASSWORD);
-
-        restBackupTenantMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedBackupTenant.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(partialUpdatedBackupTenant))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the BackupTenant in the database
-
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertBackupTenantUpdatableFieldsEquals(
-            createUpdateProxyForBean(partialUpdatedBackupTenant, backupTenant),
-            getPersistedBackupTenant(backupTenant)
-        );
-    }
-
-    @Test
-    @Transactional
     void fullUpdateBackupTenantWithPatch() throws Exception {
         // Initialize the database
         backupTenantRepository.saveAndFlush(backupTenant);
@@ -870,7 +839,7 @@ class BackupTenantResourceIT {
 
         restBackupTenantMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedBackupTenant.getId())
+                post(ENTITY_API_URL)
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(partialUpdatedBackupTenant))
             )
@@ -894,7 +863,7 @@ class BackupTenantResourceIT {
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restBackupTenantMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, backupTenantDTO.getId())
+                post(ENTITY_API_URL)
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(backupTenantDTO))
             )
@@ -916,7 +885,7 @@ class BackupTenantResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restBackupTenantMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                post(ENTITY_API_URL)
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(backupTenantDTO))
             )

@@ -8,6 +8,9 @@ import static org.khasanof.backup.domain.BackupTenantTestSamples.*;
 import java.util.HashSet;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
+import org.khasanof.backup.domain.common.BackupFile;
+import org.khasanof.backup.domain.common.BackupTenant;
+import org.khasanof.backup.domain.common.BackupTenantSetting;
 import org.khasanof.backup.web.rest.TestUtil;
 
 class BackupTenantTest {

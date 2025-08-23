@@ -16,9 +16,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.khasanof.backup.IntegrationTest;
-import org.khasanof.backup.domain.BackupFile;
-import org.khasanof.backup.domain.BackupTenant;
-import org.khasanof.backup.repository.BackupFileRepository;
+import org.khasanof.backup.domain.common.BackupFile;
+import org.khasanof.backup.domain.common.BackupTenant;
+import org.khasanof.backup.repository.common.BackupFileRepository;
 import org.khasanof.backup.service.dto.BackupFileDTO;
 import org.khasanof.backup.service.mapper.BackupFileMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +105,7 @@ class BackupFileResourceIT {
         var returnedBackupFileDTO = om.readValue(
             restBackupFileMockMvc
                 .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(backupFileDTO)))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(),
@@ -462,34 +462,6 @@ class BackupFileResourceIT {
 
     @Test
     @Transactional
-    void putExistingBackupFile() throws Exception {
-        // Initialize the database
-        backupFileRepository.saveAndFlush(backupFile);
-
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-
-        // Update the backupFile
-        BackupFile updatedBackupFile = backupFileRepository.findById(backupFile.getId()).orElseThrow();
-        // Disconnect from session so that the updates on updatedBackupFile are not directly saved in db
-        em.detach(updatedBackupFile);
-        updatedBackupFile.filePath(UPDATED_FILE_PATH).fileSize(UPDATED_FILE_SIZE).createdAt(UPDATED_CREATED_AT);
-        BackupFileDTO backupFileDTO = backupFileMapper.toDto(updatedBackupFile);
-
-        restBackupFileMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, backupFileDTO.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(backupFileDTO))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the BackupFile in the database
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertPersistedBackupFileToMatchAllProperties(updatedBackupFile);
-    }
-
-    @Test
-    @Transactional
     void putNonExistingBackupFile() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         backupFile.setId(longCount.incrementAndGet());
@@ -500,29 +472,7 @@ class BackupFileResourceIT {
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restBackupFileMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, backupFileDTO.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(backupFileDTO))
-            )
-            .andExpect(status().isBadRequest());
-
-        // Validate the BackupFile in the database
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-    }
-
-    @Test
-    @Transactional
-    void putWithIdMismatchBackupFile() throws Exception {
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-        backupFile.setId(longCount.incrementAndGet());
-
-        // Create the BackupFile
-        BackupFileDTO backupFileDTO = backupFileMapper.toDto(backupFile);
-
-        // If url ID doesn't match entity ID, it will throw BadRequestAlertException
-        restBackupFileMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                post(ENTITY_API_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(backupFileDTO))
             )
@@ -552,65 +502,6 @@ class BackupFileResourceIT {
 
     @Test
     @Transactional
-    void partialUpdateBackupFileWithPatch() throws Exception {
-        // Initialize the database
-        backupFileRepository.saveAndFlush(backupFile);
-
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-
-        // Update the backupFile using partial update
-        BackupFile partialUpdatedBackupFile = new BackupFile();
-        partialUpdatedBackupFile.setId(backupFile.getId());
-
-        partialUpdatedBackupFile.fileSize(UPDATED_FILE_SIZE).createdAt(UPDATED_CREATED_AT);
-
-        restBackupFileMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedBackupFile.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(partialUpdatedBackupFile))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the BackupFile in the database
-
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertBackupFileUpdatableFieldsEquals(
-            createUpdateProxyForBean(partialUpdatedBackupFile, backupFile),
-            getPersistedBackupFile(backupFile)
-        );
-    }
-
-    @Test
-    @Transactional
-    void fullUpdateBackupFileWithPatch() throws Exception {
-        // Initialize the database
-        backupFileRepository.saveAndFlush(backupFile);
-
-        long databaseSizeBeforeUpdate = getRepositoryCount();
-
-        // Update the backupFile using partial update
-        BackupFile partialUpdatedBackupFile = new BackupFile();
-        partialUpdatedBackupFile.setId(backupFile.getId());
-
-        partialUpdatedBackupFile.filePath(UPDATED_FILE_PATH).fileSize(UPDATED_FILE_SIZE).createdAt(UPDATED_CREATED_AT);
-
-        restBackupFileMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedBackupFile.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(partialUpdatedBackupFile))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the BackupFile in the database
-
-        assertSameRepositoryCount(databaseSizeBeforeUpdate);
-        assertBackupFileUpdatableFieldsEquals(partialUpdatedBackupFile, getPersistedBackupFile(partialUpdatedBackupFile));
-    }
-
-    @Test
-    @Transactional
     void patchNonExistingBackupFile() throws Exception {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         backupFile.setId(longCount.incrementAndGet());
@@ -621,7 +512,7 @@ class BackupFileResourceIT {
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restBackupFileMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, backupFileDTO.getId())
+                post(ENTITY_API_URL)
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(backupFileDTO))
             )
@@ -643,7 +534,7 @@ class BackupFileResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restBackupFileMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                post(ENTITY_API_URL)
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(backupFileDTO))
             )

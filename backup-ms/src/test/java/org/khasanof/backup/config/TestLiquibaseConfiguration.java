@@ -1,7 +1,5 @@
 package org.khasanof.backup.config;
 
-import java.util.concurrent.Executor;
-import javax.sql.DataSource;
 import liquibase.integration.spring.SpringLiquibase;
 import org.khasanof.core.config.RootDataSourceProperties;
 import org.slf4j.Logger;
@@ -12,40 +10,39 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseDataSource;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
-import org.springframework.core.env.Profiles;
 import tech.jhipster.config.JHipsterConstants;
 import tech.jhipster.config.liquibase.SpringLiquibaseUtil;
 
-@Configuration
-@Profile({"dev", "prod"})
-public class LiquibaseConfiguration {
+import javax.sql.DataSource;
+import java.util.concurrent.Executor;
 
-    private final Logger log = LoggerFactory.getLogger(LiquibaseConfiguration.class);
+@Configuration
+public class TestLiquibaseConfiguration {
+
+    private final Logger log = LoggerFactory.getLogger(TestLiquibaseConfiguration.class);
 
     private final Environment env;
-    private final RootDataSourceProperties rootDataSourceProperties;
 
-    public LiquibaseConfiguration(Environment env, RootDataSourceProperties rootDataSourceProperties) {
+    public TestLiquibaseConfiguration(Environment env) {
         this.env = env;
-        this.rootDataSourceProperties = rootDataSourceProperties;
     }
 
     @Value("${application.liquibase.async-start:true}")
     private Boolean asyncStart;
 
     @Bean
-    public SpringLiquibase commonLiquibase(
+    public SpringLiquibase liquibase(
         @Qualifier("taskExecutor") Executor executor,
         LiquibaseProperties liquibaseProperties,
         @LiquibaseDataSource ObjectProvider<DataSource> liquibaseDataSource,
-        @Qualifier("commonDataSource") DataSource dataSource
+        DataSource dataSource,
+        DataSourceProperties dataSourceProperties
     ) {
-        DataSourceProperties dataSourceProperties = rootDataSourceProperties.getCommon();
-
         SpringLiquibase liquibase;
         if (Boolean.TRUE.equals(asyncStart)) {
             liquibase = SpringLiquibaseUtil.createAsyncSpringLiquibase(
@@ -80,7 +77,7 @@ public class LiquibaseConfiguration {
             liquibase.setShouldRun(false);
         } else {
             liquibase.setShouldRun(liquibaseProperties.isEnabled());
-            log.info("Configuring Liquibase For Common Datasource");
+            log.info("Configuring Test Liquibase For Datasource");
         }
         return liquibase;
     }

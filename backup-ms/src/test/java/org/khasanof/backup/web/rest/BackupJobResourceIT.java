@@ -16,10 +16,10 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.khasanof.backup.IntegrationTest;
-import org.khasanof.backup.domain.BackupFile;
-import org.khasanof.backup.domain.BackupJob;
-import org.khasanof.backup.domain.enumeration.BackupStatus;
-import org.khasanof.backup.repository.BackupJobRepository;
+import org.khasanof.backup.domain.common.BackupFile;
+import org.khasanof.backup.domain.common.BackupJob;
+import org.khasanof.backup.domain.common.enumeration.BackupStatus;
+import org.khasanof.backup.repository.common.BackupJobRepository;
 import org.khasanof.backup.service.dto.BackupJobDTO;
 import org.khasanof.backup.service.mapper.BackupJobMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,7 +116,7 @@ class BackupJobResourceIT {
         var returnedBackupJobDTO = om.readValue(
             restBackupJobMockMvc
                 .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(backupJobDTO)))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(),
@@ -467,7 +467,7 @@ class BackupJobResourceIT {
 
         restBackupJobMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, backupJobDTO.getId())
+                post(ENTITY_API_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(backupJobDTO))
             )
@@ -490,7 +490,7 @@ class BackupJobResourceIT {
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restBackupJobMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, backupJobDTO.getId())
+                post(ENTITY_API_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(backupJobDTO))
             )
@@ -512,7 +512,7 @@ class BackupJobResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restBackupJobMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                post(ENTITY_API_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(om.writeValueAsBytes(backupJobDTO))
             )
@@ -556,7 +556,7 @@ class BackupJobResourceIT {
 
         restBackupJobMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedBackupJob.getId())
+                post(ENTITY_API_URL)
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(partialUpdatedBackupJob))
             )
@@ -591,7 +591,7 @@ class BackupJobResourceIT {
 
         restBackupJobMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedBackupJob.getId())
+                post(ENTITY_API_URL)
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(partialUpdatedBackupJob))
             )
@@ -615,7 +615,7 @@ class BackupJobResourceIT {
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restBackupJobMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, backupJobDTO.getId())
+                post(ENTITY_API_URL)
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(backupJobDTO))
             )
@@ -637,7 +637,7 @@ class BackupJobResourceIT {
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restBackupJobMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
+                post(ENTITY_API_URL)
                     .contentType("application/merge-patch+json")
                     .content(om.writeValueAsBytes(backupJobDTO))
             )

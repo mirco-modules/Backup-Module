@@ -6,6 +6,9 @@ import static org.khasanof.backup.domain.BackupJobTestSamples.*;
 import static org.khasanof.backup.domain.BackupTenantTestSamples.*;
 
 import org.junit.jupiter.api.Test;
+import org.khasanof.backup.domain.common.BackupFile;
+import org.khasanof.backup.domain.common.BackupJob;
+import org.khasanof.backup.domain.common.BackupTenant;
 import org.khasanof.backup.web.rest.TestUtil;
 
 class BackupFileTest {

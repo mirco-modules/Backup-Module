@@ -1,14 +1,14 @@
 package org.khasanof.backup.config;
 
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@Profile({"dev", "prod"})
-@EnableJpaRepositories({ "org.khasanof.backup.repository" })
-@EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware")
 @EnableTransactionManagement
-public class DatabaseConfiguration {}
+@EntityScan({"org.khasanof.*"})
+@EnableJpaRepositories({ "org.khasanof.*" })
+@EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware")
+public class TestDatabaseConfiguration {}

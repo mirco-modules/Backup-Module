@@ -1,5 +1,7 @@
 package org.khasanof.backup.domain;
 
+import org.khasanof.backup.domain.common.BackupJob;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BackupJobAsserts {

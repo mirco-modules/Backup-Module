@@ -1,5 +1,7 @@
 package org.khasanof.backup.domain;
 
+import org.khasanof.backup.domain.common.BackupTenantSetting;
+
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
