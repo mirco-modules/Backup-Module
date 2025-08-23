@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!--
+        Added the constraints for entity BackupJob.
+    -->
+    <changeSet id="20250822091628-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="backup_file_id"
+                                 baseTableName="backup_job"
+                                 constraintName="fk_backup_job__backup_file_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="backup_file"
+                                 />
+    </changeSet>
+</databaseChangeLog>

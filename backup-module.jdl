@@ -1,0 +1,58 @@
+entity BackupTenant {
+  id Long
+  tenantKey String required unique,
+  dbName String required,
+  dbHost String required,
+  dbPort Integer required,
+  dbUsername String required,
+  dbPassword String required
+}
+
+entity BackupTenantSetting {
+  timeUnit BackupTimeUnit required
+  duration Integer required min(1)
+  isActive Boolean required
+}
+
+entity BackupJob {
+  id Long
+  startedAt Instant required,
+  finishedAt Instant,
+  status BackupStatus required,
+  message String maxlength(1000)
+}
+
+entity BackupFile {
+  id Long
+  filePath String required,
+  fileSize Long required,
+  createdAt Instant required
+}
+
+enum BackupStatus {
+  PENDING,
+  RUNNING,
+  SUCCESS,
+  FAILED
+}
+
+enum BackupTimeUnit {
+  HOUR,
+  DAY,
+  WEEK,
+  MONTH
+}
+
+relationship OneToMany {
+  BackupTenant{backupFiles} to BackupFile{tenant}
+}
+
+relationship OneToOne {
+  BackupJob{backupFile} to BackupFile{backupJob}
+  BackupTenant{setting} to BackupTenantSetting{tenant}
+}
+
+dto * with mapstruct
+service * with serviceImpl
+paginate * with pagination
+filter *
