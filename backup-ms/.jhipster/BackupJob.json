@@ -1,0 +1,51 @@
+{
+  "annotations": {
+    "changelogDate": "20250822091628"
+  },
+  "applications": "*",
+  "clientRootFolder": "backupMs",
+  "databaseType": "sql",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "startedAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "finishedAt",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "BackupStatus",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PENDING,RUNNING,SUCCESS,FAILED"
+    },
+    {
+      "fieldName": "message",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "1000"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "microserviceName": "backupMs",
+  "name": "BackupJob",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "backupFile",
+      "otherEntityRelationshipName": "backupJob",
+      "relationshipName": "backupFile",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

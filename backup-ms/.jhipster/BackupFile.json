@@ -1,0 +1,52 @@
+{
+  "annotations": {
+    "changelogDate": "20250822091629"
+  },
+  "applications": "*",
+  "clientRootFolder": "backupMs",
+  "databaseType": "sql",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "filePath",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "fileSize",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "microserviceName": "backupMs",
+  "name": "BackupFile",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "backupJob",
+      "otherEntityRelationshipName": "backupFile",
+      "relationshipName": "backupJob",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "backupTenant",
+      "otherEntityRelationshipName": "backupFiles",
+      "relationshipName": "tenant",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

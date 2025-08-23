@@ -1,0 +1,67 @@
+{
+  "annotations": {
+    "changelogDate": "20250822091626"
+  },
+  "applications": "*",
+  "clientRootFolder": "backupMs",
+  "databaseType": "sql",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "tenantKey",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique"]
+    },
+    {
+      "fieldName": "dbName",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "dbHost",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "dbPort",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "dbUsername",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "dbPassword",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "microserviceName": "backupMs",
+  "name": "BackupTenant",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "backupTenantSetting",
+      "otherEntityRelationshipName": "tenant",
+      "relationshipName": "setting",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "backupFile",
+      "otherEntityRelationshipName": "tenant",
+      "relationshipName": "backupFiles",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

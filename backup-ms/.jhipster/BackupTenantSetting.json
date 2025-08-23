@@ -1,0 +1,43 @@
+{
+  "annotations": {
+    "changelogDate": "20250822091627"
+  },
+  "applications": "*",
+  "clientRootFolder": "backupMs",
+  "databaseType": "sql",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "timeUnit",
+      "fieldType": "BackupTimeUnit",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "HOUR,DAY,WEEK,MONTH"
+    },
+    {
+      "fieldName": "duration",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "1"
+    },
+    {
+      "fieldName": "isActive",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "microserviceName": "backupMs",
+  "name": "BackupTenantSetting",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "backupTenant",
+      "otherEntityRelationshipName": "setting",
+      "relationshipName": "tenant",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}
