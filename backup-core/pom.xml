@@ -51,6 +51,7 @@
         <notification.version>1.0.0</notification.version>
 
         <ms-core.version>1.5.0</ms-core.version>
+        <sshd-core.version>2.5.1</sshd-core.version>
         <jhipster-framework.version>8.4.0</jhipster-framework.version>
         <springdoc-openapi-starter-webmvc-api.version>2.6.0</springdoc-openapi-starter-webmvc-api.version>
     </properties>
@@ -127,6 +128,11 @@
         <dependency>
             <groupId>org.eclipse.angus</groupId>
             <artifactId>jakarta.mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.sshd</groupId>
+            <artifactId>sshd-core</artifactId>
+            <version>${sshd-core.version}</version>
         </dependency>
     </dependencies>
 

@@ -29,6 +29,19 @@ entity BackupFile {
   createdAt Instant required
 }
 
+entity BackupServer {
+  id Long
+  port Integer required
+  status BackupServerStatus required
+  host String required minlength(1) maxlength(250)
+  username String required minlength(1) maxlength(250)
+  password String required minlength(1) maxlength(250)
+}
+
+enum BackupServerStatus {
+  UP, DOWN
+}
+
 enum BackupStatus {
   PENDING,
   RUNNING,
@@ -45,6 +58,10 @@ enum BackupTimeUnit {
 
 relationship OneToMany {
   BackupTenant{backupFiles} to BackupFile{tenant}
+}
+
+relationship ManyToOne {
+  BackupTenant{server} to BackupServer
 }
 
 relationship OneToOne {

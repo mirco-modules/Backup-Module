@@ -16,5 +16,12 @@
                                  referencedColumnNames="id"
                                  referencedTableName="backup_tenant_setting"
                                  />
+
+        <addForeignKeyConstraint baseColumnNames="server_id"
+                                 baseTableName="backup_tenant"
+                                 constraintName="fk_backup_tenant__server_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="backup_server"
+        />
     </changeSet>
 </databaseChangeLog>

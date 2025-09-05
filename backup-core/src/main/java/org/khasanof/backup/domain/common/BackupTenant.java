@@ -60,6 +60,9 @@ public class BackupTenant extends AbstractAuditingEntity {
     @JsonIgnoreProperties(value = { "backupJob", "tenant" }, allowSetters = true)
     private Set<BackupFile> backupFiles = new HashSet<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private BackupServer server;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -194,6 +197,19 @@ public class BackupTenant extends AbstractAuditingEntity {
     public BackupTenant removeBackupFiles(BackupFile backupFile) {
         this.backupFiles.remove(backupFile);
         backupFile.setTenant(null);
+        return this;
+    }
+
+    public BackupServer getServer() {
+        return this.server;
+    }
+
+    public void setServer(BackupServer backupServer) {
+        this.server = backupServer;
+    }
+
+    public BackupTenant server(BackupServer backupServer) {
+        this.setServer(backupServer);
         return this;
     }
 
