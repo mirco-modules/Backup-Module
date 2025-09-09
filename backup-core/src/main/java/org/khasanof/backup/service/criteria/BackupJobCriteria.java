@@ -1,7 +1,6 @@
 package org.khasanof.backup.service.criteria;
 
 import org.khasanof.backup.domain.common.enumeration.BackupStatus;
-import org.khasanof.core.annotation.query.JoinFilter;
 import org.khasanof.core.service.criteria.base.ICriteria;
 import org.springdoc.core.annotations.ParameterObject;
 import tech.jhipster.service.filter.Filter;
@@ -55,9 +54,6 @@ public class BackupJobCriteria implements Serializable, ICriteria {
 
     private StringFilter message;
 
-    @JoinFilter(fieldName = "backupFile")
-    private LongFilter backupFileId;
-
     private Boolean distinct;
 
     public BackupJobCriteria() {}
@@ -68,7 +64,6 @@ public class BackupJobCriteria implements Serializable, ICriteria {
         this.finishedAt = other.optionalFinishedAt().map(InstantFilter::copy).orElse(null);
         this.status = other.optionalStatus().map(BackupStatusFilter::copy).orElse(null);
         this.message = other.optionalMessage().map(StringFilter::copy).orElse(null);
-        this.backupFileId = other.optionalBackupFileId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -172,25 +167,6 @@ public class BackupJobCriteria implements Serializable, ICriteria {
         this.message = message;
     }
 
-    public LongFilter getBackupFileId() {
-        return backupFileId;
-    }
-
-    public Optional<LongFilter> optionalBackupFileId() {
-        return Optional.ofNullable(backupFileId);
-    }
-
-    public LongFilter backupFileId() {
-        if (backupFileId == null) {
-            setBackupFileId(new LongFilter());
-        }
-        return backupFileId;
-    }
-
-    public void setBackupFileId(LongFilter backupFileId) {
-        this.backupFileId = backupFileId;
-    }
-
     public Boolean getDistinct() {
         return distinct;
     }
@@ -225,14 +201,13 @@ public class BackupJobCriteria implements Serializable, ICriteria {
             Objects.equals(finishedAt, that.finishedAt) &&
             Objects.equals(status, that.status) &&
             Objects.equals(message, that.message) &&
-            Objects.equals(backupFileId, that.backupFileId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, startedAt, finishedAt, status, message, backupFileId, distinct);
+        return Objects.hash(id, startedAt, finishedAt, status, message, distinct);
     }
 
     // prettier-ignore
@@ -244,7 +219,6 @@ public class BackupJobCriteria implements Serializable, ICriteria {
             optionalFinishedAt().map(f -> "finishedAt=" + f + ", ").orElse("") +
             optionalStatus().map(f -> "status=" + f + ", ").orElse("") +
             optionalMessage().map(f -> "message=" + f + ", ").orElse("") +
-            optionalBackupFileId().map(f -> "backupFileId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

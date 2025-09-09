@@ -1,6 +1,7 @@
 package org.khasanof.backup.service.feature.command;
 
 import lombok.RequiredArgsConstructor;
+import org.khasanof.backup.domain.common.BackupFile;
 import org.khasanof.backup.domain.common.BackupTenant;
 import org.khasanof.backup.service.feature.command.database.manager.GenerateSshCommandStrategyManager;
 import org.khasanof.backup.service.feature.command.filepath.SshCommandFilepathService;
@@ -24,8 +25,18 @@ public class SshCommandFactoryImpl implements SshCommandFactory {
      * @return
      */
     @Override
-    public String create(BackupTenant tenant) {
+    public String createBackupCommand(BackupTenant tenant) {
         String filepath = sshCommandFilepathService.getFilepath(tenant);
-        return generateSshCommandStrategyManager.getPrefix(tenant, filepath);
+        return generateSshCommandStrategyManager.getBackupCommandPrefix(tenant, filepath);
+    }
+
+    /**
+     *
+     * @param backupFile
+     * @return
+     */
+    @Override
+    public String createRestoreCommand(BackupFile backupFile) {
+        return generateSshCommandStrategyManager.getRestoreCommandPrefix(backupFile, backupFile.getFilePath());
     }
 }

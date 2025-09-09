@@ -1,5 +1,6 @@
 package org.khasanof.backup.service.feature.command;
 
+import org.khasanof.backup.domain.common.BackupFile;
 import org.khasanof.backup.domain.common.BackupTenant;
 
 /**
@@ -14,5 +15,12 @@ public interface SshCommandFactory {
      * @param tenant
      * @return
      */
-    String create(BackupTenant tenant);
+    String createBackupCommand(BackupTenant tenant);
+
+    /**
+     *
+     * @param backupFile
+     * @return
+     */
+    String createRestoreCommand(BackupFile backupFile);
 }

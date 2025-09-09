@@ -2,8 +2,10 @@ package org.khasanof.backup.service.feature.command.database.manager;
 
 import lombok.RequiredArgsConstructor;
 import org.khasanof.backup.config.BackupServiceProperties;
+import org.khasanof.backup.domain.common.BackupFile;
 import org.khasanof.backup.domain.common.BackupTenant;
-import org.khasanof.backup.service.feature.command.database.GenerateSshCommandStrategy;
+import org.khasanof.backup.service.feature.command.database.backup.GenerateBackupSshCommandStrategy;
+import org.khasanof.backup.service.feature.command.database.restore.GenerateRestoreSshCommandStrategy;
 import org.khasanof.core.domain.enumeration.DatabaseType;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -24,7 +26,8 @@ public class GenerateSshCommandStrategyManager implements InitializingBean {
     private final ApplicationContext applicationContext;
     private final BackupServiceProperties backupServiceProperties;
 
-    private final Map<DatabaseType, GenerateSshCommandStrategy> strategies = new HashMap<>();
+    private final Map<DatabaseType, GenerateBackupSshCommandStrategy> backupStrategies = new HashMap<>();
+    private final Map<DatabaseType, GenerateRestoreSshCommandStrategy> restoreStrategies = new HashMap<>();
 
     /**
      *
@@ -32,13 +35,28 @@ public class GenerateSshCommandStrategyManager implements InitializingBean {
      * @param filepath
      * @return
      */
-    public String getPrefix(BackupTenant tenant, String filepath) {
+    public String getBackupCommandPrefix(BackupTenant tenant, String filepath) {
         DatabaseType databaseType = backupServiceProperties.getDatabaseType();
-        GenerateSshCommandStrategy generateSshCommandStrategy = strategies.get(databaseType);
-        if (generateSshCommandStrategy == null) {
+        GenerateBackupSshCommandStrategy generateBackupSshCommandStrategy = backupStrategies.get(databaseType);
+        if (generateBackupSshCommandStrategy == null) {
             return null;
         }
-        return generateSshCommandStrategy.getPrefix(tenant, filepath);
+        return generateBackupSshCommandStrategy.getPrefix(tenant, filepath);
+    }
+
+    /**
+     *
+     * @param backupFile
+     * @param filepath
+     * @return
+     */
+    public String getRestoreCommandPrefix(BackupFile backupFile, String filepath) {
+        DatabaseType databaseType = backupServiceProperties.getDatabaseType();
+        GenerateRestoreSshCommandStrategy generateRestoreSshCommandStrategy = restoreStrategies.get(databaseType);
+        if (generateRestoreSshCommandStrategy == null) {
+            return null;
+        }
+        return generateRestoreSshCommandStrategy.getPrefix(backupFile, filepath);
     }
 
     /**
@@ -47,7 +65,10 @@ public class GenerateSshCommandStrategyManager implements InitializingBean {
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-        applicationContext.getBeansOfType(GenerateSshCommandStrategy.class)
-                .forEach((beanName, strategy) -> strategies.put(strategy.getDatabaseType(), strategy));
+        applicationContext.getBeansOfType(GenerateBackupSshCommandStrategy.class)
+                .forEach((beanName, strategy) -> backupStrategies.put(strategy.getDatabaseType(), strategy));
+
+        applicationContext.getBeansOfType(GenerateRestoreSshCommandStrategy.class)
+                .forEach((beanName, strategy) -> restoreStrategies.put(strategy.getDatabaseType(), strategy));
     }
 }

@@ -26,6 +26,9 @@
             <column name="tenant_id" type="bigint">
                 <constraints nullable="true" />
             </column>
+            <column name="backup_file_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
         <dropDefaultValue tableName="backup_file" columnName="created_at" columnDataType="${datetimeType}"/>

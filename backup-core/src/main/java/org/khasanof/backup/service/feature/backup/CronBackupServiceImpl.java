@@ -2,8 +2,10 @@ package org.khasanof.backup.service.feature.backup;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.khasanof.backup.domain.common.BackupJob;
 import org.khasanof.backup.domain.common.BackupTenant;
 import org.khasanof.backup.domain.common.BackupTenantSetting;
+import org.khasanof.backup.domain.common.enumeration.BackupStatus;
 import org.khasanof.backup.repository.common.BackupTenantRepository;
 import org.khasanof.backup.service.feature.command.SshCommandFactory;
 import org.khasanof.backup.service.feature.ssh.SshClientExecutorService;
@@ -40,6 +42,18 @@ public class CronBackupServiceImpl implements CronBackupService {
 
     /**
      *
+     * @return
+     */
+    private BackupJob createBackupJob() {
+        BackupJob backupJob = new BackupJob();
+        backupJob.setStartedAt(Instant.now());
+        backupJob.setMessage("Backup started");
+        backupJob.setStatus(BackupStatus.RUNNING);
+        return backupJob;
+    }
+
+    /**
+     *
      * @param tenant
      */
     @Override
@@ -56,7 +70,7 @@ public class CronBackupServiceImpl implements CronBackupService {
             return;
         }
 
-        String command = sshCommandFactory.create(tenant);
+        String command = sshCommandFactory.createBackupCommand(tenant);
         sshClientExecutorService.executeSshCommand(tenant, command);
     }
 

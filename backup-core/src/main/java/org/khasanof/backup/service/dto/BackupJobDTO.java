@@ -28,8 +28,6 @@ public class BackupJobDTO implements IDto {
     @Size(max = 1000)
     private String message;
 
-    private BackupFileDTO backupFile;
-
     public Long getId() {
         return id;
     }
@@ -70,14 +68,6 @@ public class BackupJobDTO implements IDto {
         this.message = message;
     }
 
-    public BackupFileDTO getBackupFile() {
-        return backupFile;
-    }
-
-    public void setBackupFile(BackupFileDTO backupFile) {
-        this.backupFile = backupFile;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -108,7 +98,6 @@ public class BackupJobDTO implements IDto {
             ", finishedAt='" + getFinishedAt() + "'" +
             ", status='" + getStatus() + "'" +
             ", message='" + getMessage() + "'" +
-            ", backupFile=" + getBackupFile() +
             "}";
     }
 }

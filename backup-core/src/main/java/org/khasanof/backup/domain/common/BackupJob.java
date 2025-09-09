@@ -1,6 +1,5 @@
 package org.khasanof.backup.domain.common;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -42,11 +41,6 @@ public class BackupJob extends AbstractAuditingEntity {
     @Size(max = 1000)
     @Column(name = "message", length = 1000)
     private String message;
-
-    @JsonIgnoreProperties(value = { "backupJob", "tenant" }, allowSetters = true)
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(unique = true)
-    private BackupFile backupFile;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -113,19 +107,6 @@ public class BackupJob extends AbstractAuditingEntity {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public BackupFile getBackupFile() {
-        return this.backupFile;
-    }
-
-    public void setBackupFile(BackupFile backupFile) {
-        this.backupFile = backupFile;
-    }
-
-    public BackupJob backupFile(BackupFile backupFile) {
-        this.setBackupFile(backupFile);
-        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

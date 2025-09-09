@@ -1,4 +1,4 @@
-package org.khasanof.backup.service.feature.command.database;
+package org.khasanof.backup.service.feature.command.database.backup;
 
 import org.khasanof.backup.domain.common.BackupTenant;
 import org.khasanof.core.domain.enumeration.DatabaseType;
@@ -8,7 +8,7 @@ import org.khasanof.core.domain.enumeration.DatabaseType;
  * @see org.khasanof.backup.service.feature.command.database
  * @since 9/5/25
  */
-public interface GenerateSshCommandStrategy {
+public interface GenerateBackupSshCommandStrategy {
 
     /**
      *

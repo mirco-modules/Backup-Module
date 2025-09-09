@@ -37,8 +37,8 @@ public class BackupFile extends AbstractAuditingEntity {
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "backupFile" }, allowSetters = true)
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "backupFile")
     private BackupJob backupJob;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -104,12 +104,6 @@ public class BackupFile extends AbstractAuditingEntity {
     }
 
     public void setBackupJob(BackupJob backupJob) {
-        if (this.backupJob != null) {
-            this.backupJob.setBackupFile(null);
-        }
-        if (backupJob != null) {
-            backupJob.setBackupFile(this);
-        }
         this.backupJob = backupJob;
     }
 
